@@ -1,0 +1,15 @@
+build/
+m5out/
+__pycache__/
+*.pyc
+*.o
+*.a
+*.so
+.vscode/
+.idea/
+*.swp
+.DS_Store
+*.gz
+*.log
+tmp/
+temp/

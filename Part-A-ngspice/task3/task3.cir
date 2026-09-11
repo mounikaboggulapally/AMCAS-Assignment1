@@ -1,0 +1,210 @@
+* =========================================================
+* TASK 3 - SRAM Read Margin vs VDD
+* =========================================================
+
+.include 45nm_bulk.txt
+
+.param VDD=1.1
+
+Vdd vdd 0 'VDD'
+
+* Wordline
+Vwl_src wl_src 0 PULSE(0 'VDD' 1n 50p 50p 3n 10n)
+Rwl wl_src wl 1
+
+* SRAM cell
+MP1 qb q  vdd vdd pmos W=0.15u L=0.045u
+MN1 qb q  0   0   nmos W=0.20u L=0.045u
+
+MP2 q  qb vdd vdd pmos W=0.15u L=0.045u
+MN2 q  qb 0   0   nmos W=0.20u L=0.045u
+
+* Access transistors
+MA1 bl  wl q  0 nmos W=0.16u L=0.045u
+MA2 blb wl qb 0 nmos W=0.16u L=0.045u
+
+* Bitline capacitances
+Cbl  bl  0 180f IC='VDD'
+Cblb blb 0 180f IC='VDD'
+
+* SRAM initial state
+.ic v(q)=0 v(qb)='VDD'
+
+
+.control
+
+set method=gear
+set reltol=1e-4
+set abstol=1e-18
+set vntol=1e-6
+
+* =====================================================
+* VDD = 1.10 V
+* =====================================================
+alterparam VDD=1.10
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r110="$&dv"
+set m110="$&dvmv"
+
+* =====================================================
+* VDD = 1.05 V
+* =====================================================
+alterparam VDD=1.05
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r105="$&dv"
+set m105="$&dvmv"
+
+* =====================================================
+* VDD = 1.00 V
+* =====================================================
+alterparam VDD=1.00
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r100="$&dv"
+set m100="$&dvmv"
+
+* =====================================================
+* VDD = 0.95 V
+* =====================================================
+alterparam VDD=0.95
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r095="$&dv"
+set m095="$&dvmv"
+
+* =====================================================
+* VDD = 0.90 V
+* =====================================================
+alterparam VDD=0.90
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r090="$&dv"
+set m090="$&dvmv"
+
+* =====================================================
+* VDD = 0.85 V
+* =====================================================
+alterparam VDD=0.85
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r085="$&dv"
+set m085="$&dvmv"
+
+* =====================================================
+* VDD = 0.80 V
+* =====================================================
+alterparam VDD=0.80
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r080="$&dv"
+set m080="$&dvmv"
+
+* =====================================================
+* VDD = 0.75 V
+* =====================================================
+alterparam VDD=0.75
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r075="$&dv"
+set m075="$&dvmv"
+
+* =====================================================
+* VDD = 0.70 V
+* =====================================================
+alterparam VDD=0.70
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r070="$&dv"
+set m070="$&dvmv"
+
+* =====================================================
+* VDD = 0.65 V
+* =====================================================
+alterparam VDD=0.65
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r065="$&dv"
+set m065="$&dvmv"
+
+* =====================================================
+* VDD = 0.60 V
+* =====================================================
+alterparam VDD=0.60
+reset
+tran 2p 4n uic
+let diff=v(blb)-v(bl)
+meas tran dv FIND diff AT=2n
+let dvmv=dv*1000
+set r060="$&dv"
+set m060="$&dvmv"
+
+* =====================================================
+* =========================================================
+* FINAL TASK 3 PLOT
+* =========================================================
+
+let vdd_plot = vector(11)
+let dv_plot  = vector(11)
+
+let vdd_plot[0] = 1.10
+let vdd_plot[1] = 1.05
+let vdd_plot[2] = 1.00
+let vdd_plot[3] = 0.95
+let vdd_plot[4] = 0.90
+let vdd_plot[5] = 0.85
+let vdd_plot[6] = 0.80
+let vdd_plot[7] = 0.75
+let vdd_plot[8] = 0.70
+let vdd_plot[9] = 0.65
+let vdd_plot[10] = 0.60
+
+* Convert saved measurement strings back to numbers
+let dv_plot[0] = $r110
+let dv_plot[1] = $r105
+let dv_plot[2] = $r100
+let dv_plot[3] = $r095
+let dv_plot[4] = $r090
+let dv_plot[5] = $r085
+let dv_plot[6] = $r080
+let dv_plot[7] = $r075
+let dv_plot[8] = $r070
+let dv_plot[9] = $r065
+let dv_plot[10] = $r060
+
+let dv_mV = dv_plot*1000
+
+plot dv_mV vs vdd_plot
+.endc
+.end

@@ -1,0 +1,55 @@
+*=========================================================
+* TASK 2 - SRAM READ DISTURB
+* CASE 1: ORIGINAL ACCESS TRANSISTORS
+* MA1 = MA2 = 0.16um
+*=========================================================
+
+.include 45nm_bulk.txt
+
+.param VDD=1.1 VBL=1.1
+
+* Supply
+Vdd vdd 0 'VDD'
+
+* Wordline
+Vwl wl 0 PWL(0 0 1n 0 1.05n 'VDD')
+
+* Cross-coupled inverter 1
+MP1 qb q  vdd vdd pmos W=0.15u L=0.045u
+MN1 qb q  0   0   nmos W=0.20u L=0.045u
+
+* Cross-coupled inverter 2
+MP2 q  qb vdd vdd pmos W=0.15u L=0.045u
+MN2 q  qb 0   0   nmos W=0.20u L=0.045u
+
+* Access transistors
+MA1 bl  wl q  0   nmos W=0.16u L=0.045u
+MA2 blb wl qb 0   nmos W=0.16u L=0.045u
+
+* Bitline capacitances
+Cbl  bl  0 180f IC='VBL'
+Cblb blb 0 180f IC='VBL'
+
+* Initial SRAM state
+.ic v(q)=0 v(qb)='VDD'
+
+.control
+
+* Transient simulation
+tran 5p 4n uic
+
+* Plot storage node q
+plot v(q)
+
+* Plot both storage nodes if required
+plot v(q) v(qb)
+
+* Measure maximum voltage reached by q
+meas tran qmax MAX v(q) FROM=1n TO=4n
+
+* Save data
+wrdata task2_original.csv v(bl) v(blb) v(q) v(qb)
+
+.endc
+
+.end
